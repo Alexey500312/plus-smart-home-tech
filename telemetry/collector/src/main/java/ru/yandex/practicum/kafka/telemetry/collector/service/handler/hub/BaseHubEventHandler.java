@@ -10,6 +10,8 @@ import ru.yandex.practicum.kafka.telemetry.collector.model.hub.HubEventType;
 import ru.yandex.practicum.kafka.telemetry.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.kafka.telemetry.event.HubEventAvro;
 
+import java.time.Instant;
+
 @Slf4j
 @RequiredArgsConstructor
 public abstract class BaseHubEventHandler<T extends SpecificRecordBase> implements HubEventHandler {
@@ -29,7 +31,7 @@ public abstract class BaseHubEventHandler<T extends SpecificRecordBase> implemen
         T payload = toAvro(event);
         HubEventAvro eventAvro = HubEventAvro.newBuilder()
                 .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setTimestamp(event.getTimestamp() != null ? event.getTimestamp() : Instant.now())
                 .setPayload(payload)
                 .build();
 

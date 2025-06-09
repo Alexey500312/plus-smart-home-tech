@@ -10,6 +10,8 @@ import ru.yandex.practicum.kafka.telemetry.collector.model.sensor.SensorEventTyp
 import ru.yandex.practicum.kafka.telemetry.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
+import java.time.Instant;
+
 @Slf4j
 @RequiredArgsConstructor
 public abstract class BaseSensorEventHandler<T extends SpecificRecordBase> implements SensorEventHandler {
@@ -30,7 +32,7 @@ public abstract class BaseSensorEventHandler<T extends SpecificRecordBase> imple
         SensorEventAvro eventAvro = SensorEventAvro.newBuilder()
                 .setId(event.getId())
                 .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp())
+                .setTimestamp(event.getTimestamp() != null ? event.getTimestamp() : Instant.now())
                 .setPayload(payload)
                 .build();
 
