@@ -29,9 +29,12 @@ public abstract class BaseHubEventHandler<T extends SpecificRecordBase> implemen
 
         T payload = toAvro(event);
 
+        Instant timestamp = event.hasTimestamp()
+                ? Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos())
+                : Instant.now();
         HubEventAvro hubEventAvro = HubEventAvro.newBuilder()
                 .setHubId(event.getHubId())
-                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
+                .setTimestamp(timestamp)
                 .setPayload(payload)
                 .build();
 
