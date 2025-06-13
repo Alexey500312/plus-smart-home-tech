@@ -4,9 +4,8 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.avro.specific.SpecificRecordBase;
 import org.apache.kafka.clients.producer.ProducerRecord;
+import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.collector.config.TopicType;
-import ru.yandex.practicum.kafka.telemetry.collector.model.sensor.SensorEvent;
-import ru.yandex.practicum.kafka.telemetry.collector.model.sensor.SensorEventType;
 import ru.yandex.practicum.kafka.telemetry.collector.service.KafkaEventProducer;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 
@@ -17,27 +16,26 @@ import java.time.Instant;
 public abstract class BaseSensorEventHandler<T extends SpecificRecordBase> implements SensorEventHandler {
     protected final KafkaEventProducer producer;
 
-    protected abstract T toAvro(SensorEvent event);
+    protected abstract T toAvro(SensorEventProto event);
 
     @Override
-    public abstract SensorEventType getMessageType();
+    public abstract SensorEventProto.PayloadCase getMessageType();
 
     @Override
-    public void handle(SensorEvent event) {
-        if (!event.getType().equals(getMessageType())) {
-            throw new IllegalArgumentException("Неизвестный тип события: " + event.getType());
+    public void handle(SensorEventProto event) {
+        if (!event.getPayloadCase().equals(getMessageType())) {
+            throw new IllegalArgumentException("Неизвестный тип события: " + event.getPayloadCase());
         }
 
         T payload = toAvro(event);
-        SensorEventAvro eventAvro = SensorEventAvro.newBuilder()
+
+        SensorEventAvro sensorEventAvro = SensorEventAvro.newBuilder()
                 .setId(event.getId())
                 .setHubId(event.getHubId())
-                .setTimestamp(event.getTimestamp() != null ? event.getTimestamp() : Instant.now())
+                .setTimestamp(Instant.ofEpochSecond(event.getTimestamp().getSeconds(), event.getTimestamp().getNanos()))
                 .setPayload(payload)
                 .build();
 
-        log.warn("avro: {}", eventAvro);
-
-        producer.getProducer().send(new ProducerRecord<>(producer.getTopics().get(TopicType.SENSORS_EVENTS), eventAvro));
+        producer.getProducer().send(new ProducerRecord<>(producer.getTopics().get(TopicType.SENSORS_EVENTS), sensorEventAvro));
     }
 }
