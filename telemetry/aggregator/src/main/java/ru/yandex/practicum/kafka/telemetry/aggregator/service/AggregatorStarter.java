@@ -11,8 +11,8 @@ import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.TopicPartition;
 import org.apache.kafka.common.errors.WakeupException;
 import org.springframework.stereotype.Component;
-import ru.yandex.practicum.kafka.telemetry.aggregator.config.KafkaConfig;
 import ru.yandex.practicum.kafka.telemetry.aggregator.config.TopicType;
+import ru.yandex.practicum.kafka.telemetry.aggregator.service.client.AggregatorClient;
 import ru.yandex.practicum.kafka.telemetry.event.SensorEventAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorStateAvro;
 import ru.yandex.practicum.kafka.telemetry.event.SensorsSnapshotAvro;
@@ -31,7 +31,6 @@ public class AggregatorStarter {
     private static final int AMOUNT_PART_COMMIT = 10;
 
     private final AggregatorClient client;
-    private final KafkaConfig config;
     private final Map<TopicPartition, OffsetAndMetadata> currentOffsets = new HashMap<>();
     private final Map<String, SensorsSnapshotAvro> snapshots = new HashMap<>();
 
@@ -39,22 +38,28 @@ public class AggregatorStarter {
         Runtime.getRuntime().addShutdownHook(new Thread(client.getConsumer()::wakeup));
 
         try {
-            client.getConsumer().subscribe(List.of(config.getConsumerTopics().get(TopicType.SENSORS_EVENTS)));
+            client.getConsumer().subscribe(List.of(client.getConsumerTopics().get(TopicType.SENSORS_EVENTS)));
             while (true) {
-                ConsumerRecords<String, SpecificRecordBase> records = client.getConsumer().poll(CONSUME_ATTEMPT_TIMEOUT);
-                int count = 0;
-                for (ConsumerRecord<String, SpecificRecordBase> record : records) {
-                    log.info("{}", record);
-                    SensorEventAvro event = (SensorEventAvro) record.value();
-                    Optional<SensorsSnapshotAvro> snapshot = updateState(event);
-                    snapshot.ifPresent(s -> {
-                        snapshots.put(event.getHubId(), s);
-                        client.getProducer().send(new ProducerRecord<>(config.getProducerTopics().get(TopicType.SENSORS_SNAPSHOTS), s));
-                        log.info("{}", s);
-                    });
-                    manageOffsets(record, count, client.getConsumer());
+                try {
+                    ConsumerRecords<String, SpecificRecordBase> records = client.getConsumer().poll(CONSUME_ATTEMPT_TIMEOUT);
+                    int count = 0;
+                    for (ConsumerRecord<String, SpecificRecordBase> record : records) {
+                        log.info("{}", record);
+                        SensorEventAvro event = (SensorEventAvro) record.value();
+                        Optional<SensorsSnapshotAvro> snapshot = updateState(event);
+                        snapshot.ifPresent(s -> {
+                            snapshots.put(event.getHubId(), s);
+                            client.getProducer().send(new ProducerRecord<>(client.getProducerTopics().get(TopicType.SENSORS_SNAPSHOTS), s));
+                            log.info("{}", s);
+                        });
+                        manageOffsets(record, count, client.getConsumer());
+                    }
+                    client.getConsumer().commitAsync();
+                } catch (WakeupException e) {
+                    throw new WakeupException();
+                } catch (Exception e) {
+                    log.error("Ошибка ", e);
                 }
-                client.getConsumer().commitAsync();
             }
         } catch (WakeupException ignored) {
         } finally {

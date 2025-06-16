@@ -1,4 +1,4 @@
-package ru.yandex.practicum.kafka.telemetry.aggregator.service;
+package ru.yandex.practicum.kafka.telemetry.aggregator.service.client;
 
 import lombok.RequiredArgsConstructor;
 import org.apache.avro.specific.SpecificRecordBase;
@@ -8,6 +8,9 @@ import org.apache.kafka.clients.producer.KafkaProducer;
 import org.apache.kafka.clients.producer.Producer;
 import org.springframework.stereotype.Component;
 import ru.yandex.practicum.kafka.telemetry.aggregator.config.KafkaConfig;
+import ru.yandex.practicum.kafka.telemetry.aggregator.config.TopicType;
+
+import java.util.EnumMap;
 
 @Component
 @RequiredArgsConstructor
@@ -25,11 +28,21 @@ public class AggregatorClient implements Client {
     }
 
     @Override
+    public EnumMap<TopicType, String> getProducerTopics() {
+        return config.getProducerTopics();
+    }
+
+    @Override
     public Consumer<String, SpecificRecordBase> getConsumer() {
         if (consumer == null) {
             initConsumer();
         }
         return consumer;
+    }
+
+    @Override
+    public EnumMap<TopicType, String> getConsumerTopics() {
+        return config.getConsumerTopics();
     }
 
     @Override

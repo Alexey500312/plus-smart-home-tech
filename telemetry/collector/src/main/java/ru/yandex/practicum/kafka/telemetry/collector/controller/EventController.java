@@ -12,7 +12,6 @@ import ru.yandex.practicum.grpc.telemetry.event.SensorEventProto;
 import ru.yandex.practicum.kafka.telemetry.collector.service.handler.hub.HubEventHandler;
 import ru.yandex.practicum.kafka.telemetry.collector.service.handler.sensor.SensorEventHandler;
 
-import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
@@ -24,7 +23,7 @@ public class EventController extends CollectorControllerGrpc.CollectorController
     private final Map<HubEventProto.PayloadCase, HubEventHandler> hubEventHandlers;
     private final Map<SensorEventProto.PayloadCase, SensorEventHandler> sensorEventHandlers;
 
-    public EventController(Set<HubEventHandler> hubEventHandlers, List<SensorEventHandler> sensorEventHandlers) {
+    public EventController(Set<HubEventHandler> hubEventHandlers, Set<SensorEventHandler> sensorEventHandlers) {
         this.hubEventHandlers = hubEventHandlers.stream()
                 .collect(Collectors.toMap(HubEventHandler::getMessageType, Function.identity()));
         this.sensorEventHandlers = sensorEventHandlers.stream()
