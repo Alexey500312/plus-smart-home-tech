@@ -36,11 +36,11 @@ services:
 
   analyzer-db:
     image: postgres:16.1
-    container_name: postgres-analyzer-db
+    container_name: postgres-sht-db
     ports:
       - "5432:5432"
     environment:
-      - POSTGRES_DB=analyzer
+      - POSTGRES_DB=sht
       - POSTGRES_USER=sa
       - POSTGRES_PASSWORD=password
     healthcheck:

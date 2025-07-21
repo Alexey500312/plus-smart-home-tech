@@ -12,4 +12,17 @@
     <artifactId>commerce</artifactId>
     <packaging>pom</packaging>
 
+    <properties>
+        <lombok-mapstruct-binding.version>0.2.0</lombok-mapstruct-binding.version>
+        <org.mapstruct.version>1.5.5.Final</org.mapstruct.version>
+        <querydsl.version>5.0.0</querydsl.version>
+    </properties>
+
+    <modules>
+        <module>shopping-store</module>
+        <module>shopping-cart</module>
+        <module>warehouse</module>
+        <module>interaction-api</module>
+    </modules>
+
 </project>
