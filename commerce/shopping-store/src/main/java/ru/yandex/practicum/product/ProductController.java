@@ -6,10 +6,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.product.ProductCategory;
-import ru.yandex.practicum.dto.product.ProductDto;
-import ru.yandex.practicum.dto.product.ProductDtoList;
-import ru.yandex.practicum.dto.product.QuantityState;
+import ru.yandex.practicum.dto.ProductCategory;
+import ru.yandex.practicum.dto.ProductDto;
+import ru.yandex.practicum.dto.ProductDtoList;
+import ru.yandex.practicum.dto.QuantityState;
 import ru.yandex.practicum.params.Pageable;
 import ru.yandex.practicum.validation.ValidatorGroups;
 

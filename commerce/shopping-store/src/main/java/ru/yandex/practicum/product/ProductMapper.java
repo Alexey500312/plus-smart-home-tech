@@ -2,7 +2,7 @@ package ru.yandex.practicum.product;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;
-import ru.yandex.practicum.dto.product.ProductDto;
+import ru.yandex.practicum.dto.ProductDto;
 
 import java.util.List;
 

@@ -2,7 +2,6 @@ package ru.yandex.practicum.params;
 
 import lombok.Builder;
 import lombok.Data;
-import ru.yandex.practicum.dto.product.DirectionSort;
 
 import java.util.ArrayList;
 import java.util.List;

@@ -1,4 +1,4 @@
-package ru.yandex.practicum.dto.error;
+package ru.yandex.practicum.dto;
 
 import lombok.Builder;
 import lombok.Data;

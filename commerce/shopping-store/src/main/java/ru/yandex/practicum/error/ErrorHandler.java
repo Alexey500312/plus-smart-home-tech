@@ -10,7 +10,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
-import ru.yandex.practicum.dto.error.ErrorDto;
+import ru.yandex.practicum.dto.ErrorDto;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 
 import java.util.List;
