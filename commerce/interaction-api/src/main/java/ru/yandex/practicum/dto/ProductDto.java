@@ -33,7 +33,7 @@ public class ProductDto {
 
     @NotNull(groups = {ValidatorGroups.Create.class, ValidatorGroups.Update.class},
             message = "Не указан статус товара")
-    private ProductState productState;
+    private State productState;
 
     private ProductCategory productCategory;
 

@@ -6,7 +6,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.QProduct;
 import ru.yandex.practicum.dto.*;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.params.Pageable;
@@ -52,8 +51,8 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public Boolean removeProductFromStore(UUID productId) {
         Product product = getProductById(productId);
-        product.setProductState(ProductState.DEACTIVATE);
-        return productRepository.save(product).getProductState().equals(ProductState.DEACTIVATE);
+        product.setProductState(State.DEACTIVATE);
+        return productRepository.save(product).getProductState().equals(State.DEACTIVATE);
     }
 
     @Override

@@ -3,7 +3,7 @@ package ru.yandex.practicum.product;
 import jakarta.persistence.*;
 import lombok.*;
 import ru.yandex.practicum.dto.ProductCategory;
-import ru.yandex.practicum.dto.ProductState;
+import ru.yandex.practicum.dto.State;
 import ru.yandex.practicum.dto.QuantityState;
 
 import java.math.BigDecimal;
@@ -37,7 +37,7 @@ public class Product {
 
     @Column(name = "STATE")
     @Enumerated(EnumType.STRING)
-    private ProductState productState;
+    private State productState;
 
     @Column(name = "CATEGORY")
     @Enumerated(EnumType.STRING)
