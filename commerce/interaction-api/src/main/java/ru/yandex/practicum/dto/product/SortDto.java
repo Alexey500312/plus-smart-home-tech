@@ -7,5 +7,6 @@ import lombok.Data;
 @Builder(toBuilder = true)
 public class SortDto {
     private DirectionSort direction;
+
     private String property;
 }

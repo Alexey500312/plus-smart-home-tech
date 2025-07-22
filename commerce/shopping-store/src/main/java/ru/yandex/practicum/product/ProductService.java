@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.product;
 
 import ru.yandex.practicum.dto.product.ProductCategory;
 import ru.yandex.practicum.dto.product.ProductDto;

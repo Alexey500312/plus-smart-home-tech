@@ -1,10 +1,9 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.product;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
 import ru.yandex.practicum.dto.product.SortDto;
-import ru.yandex.practicum.params.SortParams;
 
 import java.util.List;
 
@@ -13,8 +12,8 @@ public interface SortMapper {
     SortMapper INSTANCE = Mappers.getMapper(SortMapper.class);
 
     @Mapping(source = "sort", target = "property")
-    @Mapping(target = "direction", expression = "java(sortParams.getDirectionOrDefault())")
-    SortDto toSortDto(SortParams sortParams);
+    @Mapping(target = "direction", expression = "java(ru.yandex.practicum.dto.product.DirectionSort.ASC)")
+    SortDto toSortDto(String sort);
 
-    List<SortDto> toSortDtoList(List<SortParams> sortParams);
+    List<SortDto> toSortDtoList(List<String> sorts);
 }

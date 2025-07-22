@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.product;
 
 import org.mapstruct.Mapper;
 import org.mapstruct.factory.Mappers;

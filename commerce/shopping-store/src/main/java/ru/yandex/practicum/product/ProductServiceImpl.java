@@ -1,4 +1,4 @@
-package ru.yandex.practicum;
+package ru.yandex.practicum.product;
 
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
@@ -6,6 +6,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import ru.yandex.practicum.QProduct;
 import ru.yandex.practicum.dto.product.*;
 import ru.yandex.practicum.exception.ProductNotFoundException;
 import ru.yandex.practicum.params.Pageable;
@@ -20,18 +21,15 @@ public class ProductServiceImpl implements ProductService {
 
     @Override
     public ProductDtoList getProductList(ProductCategory category, Pageable pageable) {
-        Sort sort = Sort.by(pageable.getSortParams().stream()
-                .map(s -> switch (s.getDirectionOrDefault()) {
-                    case ASC -> Sort.Order.asc(s.getSort());
-                    case DESC -> Sort.Order.desc(s.getSort());
-                })
+        Sort sort = Sort.by(pageable.getSort().stream()
+                .map(Sort.Order::asc)
                 .toList());
 
         Predicate predicate = QProduct.product.productCategory.eq(category);
         org.springframework.data.domain.Pageable page = PageRequest.of(pageable.getPage(), pageable.getSize(), sort);
         return ProductDtoList.builder()
                 .content(ProductMapper.INSTANCE.toCategoryDtoList(productRepository.findAll(predicate, page).toList()))
-                .sort(SortMapper.INSTANCE.toSortDtoList(pageable.getSortParams()))
+                .sort(SortMapper.INSTANCE.toSortDtoList(pageable.getSort()))
                 .build();
     }
 

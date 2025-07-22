@@ -9,5 +9,6 @@ import java.util.List;
 @Builder(toBuilder = true)
 public class ProductDtoList {
     private List<ProductDto> content;
+
     private List<SortDto> sort;
 }
