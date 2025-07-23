@@ -1,9 +1,10 @@
-package ru.yandex.practicum.dto;
+package ru.yandex.practicum.dto.request;
 
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.dto.DimensionDto;
 
 import java.util.UUID;
 

@@ -1,15 +1,15 @@
 package ru.yandex.practicum.product;
 
-import ru.yandex.practicum.dto.ProductCategory;
+import org.springframework.data.domain.Pageable;
 import ru.yandex.practicum.dto.ProductDto;
-import ru.yandex.practicum.dto.ProductDtoList;
-import ru.yandex.practicum.dto.QuantityState;
-import ru.yandex.practicum.params.Pageable;
+import ru.yandex.practicum.dto.ProductListDto;
+import ru.yandex.practicum.dto.enums.ProductCategory;
+import ru.yandex.practicum.dto.enums.QuantityState;
 
 import java.util.UUID;
 
 public interface ProductService {
-    ProductDtoList getProductList(ProductCategory category, Pageable pageable);
+    ProductListDto getProductList(ProductCategory category, Pageable pageable);
 
     ProductDto createProduct(ProductDto productDto);
 

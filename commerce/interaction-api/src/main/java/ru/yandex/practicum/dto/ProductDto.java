@@ -5,6 +5,9 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Data;
+import ru.yandex.practicum.dto.enums.ProductCategory;
+import ru.yandex.practicum.dto.enums.QuantityState;
+import ru.yandex.practicum.dto.enums.State;
 import ru.yandex.practicum.validation.ValidatorGroups;
 
 import java.math.BigDecimal;

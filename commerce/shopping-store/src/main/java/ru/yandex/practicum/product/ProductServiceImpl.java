@@ -2,13 +2,15 @@ package ru.yandex.practicum.product;
 
 import com.querydsl.core.types.Predicate;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ru.yandex.practicum.dto.*;
+import ru.yandex.practicum.dto.ProductDto;
+import ru.yandex.practicum.dto.ProductListDto;
+import ru.yandex.practicum.dto.enums.ProductCategory;
+import ru.yandex.practicum.dto.enums.QuantityState;
+import ru.yandex.practicum.dto.enums.State;
 import ru.yandex.practicum.exception.ProductNotFoundException;
-import ru.yandex.practicum.params.Pageable;
 
 import java.util.UUID;
 
@@ -19,17 +21,11 @@ public class ProductServiceImpl implements ProductService {
     private final ProductRepository productRepository;
 
     @Override
-    public ProductDtoList getProductList(ProductCategory category, Pageable pageable) {
-        Sort sort = Sort.by(pageable.getSort().stream()
-                .map(Sort.Order::asc)
-                .toList());
-
+    public ProductListDto getProductList(ProductCategory category, Pageable pageable) {
         Predicate predicate = QProduct.product.productCategory.eq(category);
-        org.springframework.data.domain.Pageable page = PageRequest.of(pageable.getPage(), pageable.getSize(), sort);
-        return ProductDtoList.builder()
-                .content(ProductMapper.INSTANCE.toCategoryDtoList(productRepository.findAll(predicate, page).toList()))
-                .sort(SortMapper.INSTANCE.toSortDtoList(pageable.getSort()))
-                .build();
+        return ProductMapper.INSTANCE.toProdictListDto(
+                ProductMapper.INSTANCE.toProductDtoList(productRepository.findAll(predicate, pageable).toList()),
+                SortMapper.INSTANCE.toSortDtoList(pageable.getSort().toList()));
     }
 
     @Override

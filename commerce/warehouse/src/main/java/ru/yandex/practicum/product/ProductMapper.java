@@ -3,7 +3,7 @@ package ru.yandex.practicum.product;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.factory.Mappers;
-import ru.yandex.practicum.dto.NewProductInWarehouseRequest;
+import ru.yandex.practicum.dto.request.NewProductInWarehouseRequest;
 
 @Mapper
 public interface ProductMapper {

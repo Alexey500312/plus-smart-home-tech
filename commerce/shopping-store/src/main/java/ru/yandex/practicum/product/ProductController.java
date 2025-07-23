@@ -1,17 +1,15 @@
 package ru.yandex.practicum.product;
 
-import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
+import org.springframework.data.domain.Pageable;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
-import ru.yandex.practicum.dto.ProductCategory;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+import ru.yandex.practicum.contract.ShoppingStoreOperations;
 import ru.yandex.practicum.dto.ProductDto;
-import ru.yandex.practicum.dto.ProductDtoList;
-import ru.yandex.practicum.dto.QuantityState;
-import ru.yandex.practicum.params.Pageable;
-import ru.yandex.practicum.validation.ValidatorGroups;
+import ru.yandex.practicum.dto.ProductListDto;
+import ru.yandex.practicum.dto.enums.ProductCategory;
+import ru.yandex.practicum.dto.enums.QuantityState;
 
 import java.util.UUID;
 
@@ -19,46 +17,36 @@ import java.util.UUID;
 @RestController
 @RequiredArgsConstructor
 @Validated
-public class ProductController {
+public class ProductController implements ShoppingStoreOperations {
     private final ProductService productService;
 
-    @GetMapping
-    @ResponseStatus(HttpStatus.OK)
-    public ProductDtoList findProductByCategory(@RequestParam("category") @NotNull ProductCategory category,
-                                                Pageable pageable) {
-        return productService.getProductList(category, pageable.getPageableOrDefault());
+    @Override
+    public ProductListDto findProductByCategory(ProductCategory category, Pageable pageable) {
+        return productService.getProductList(category, pageable);
     }
 
-    @PutMapping
-    @ResponseStatus(HttpStatus.CREATED)
-    @Validated({ValidatorGroups.Create.class})
-    public ProductDto createProduct(@RequestBody @Valid ProductDto createCategoryDto) {
+    @Override
+    public ProductDto createProduct(ProductDto createCategoryDto) {
         return productService.createProduct(createCategoryDto);
     }
 
-    @PostMapping
-    @ResponseStatus(HttpStatus.OK)
-    @Validated({ValidatorGroups.Update.class})
-    public ProductDto updateProduct(@RequestBody @Valid ProductDto createCategoryDto) {
+    @Override
+    public ProductDto updateProduct(ProductDto createCategoryDto) {
         return productService.updateProduct(createCategoryDto);
     }
 
-    @PostMapping("/removeProductFromStore")
-    @ResponseStatus(HttpStatus.OK)
-    public Boolean removeProductFromStore(@RequestBody UUID productId) {
+    @Override
+    public Boolean removeProductFromStore(UUID productId) {
         return productService.removeProductFromStore(productId);
     }
 
-    @PostMapping("/quantityState")
-    @ResponseStatus(HttpStatus.OK)
-    public Boolean setProductQuantityState(@RequestParam("productId") @NotNull UUID productId,
-                                           @RequestParam("quantityState") @NotNull QuantityState quantityState) {
+    @Override
+    public Boolean setProductQuantityState(UUID productId, QuantityState quantityState) {
         return productService.setProductQuantityState(productId, quantityState);
     }
 
-    @GetMapping("/{productId}")
-    @ResponseStatus(HttpStatus.OK)
-    public ProductDto findProductById(@PathVariable("productId") @NotNull UUID productId) {
+    @Override
+    public ProductDto findProductById(UUID productId) {
         return productService.findProductById(productId);
     }
 }

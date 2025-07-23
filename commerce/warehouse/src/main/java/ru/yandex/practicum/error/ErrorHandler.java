@@ -1,10 +1,15 @@
 package ru.yandex.practicum.error;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import feign.FeignException;
 import jakarta.validation.ConstraintViolationException;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.tomcat.util.buf.StringUtils;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -19,7 +24,10 @@ import java.util.List;
 
 @Slf4j
 @RestControllerAdvice
+@RequiredArgsConstructor
 public class ErrorHandler {
+    private final ObjectMapper mapper;
+
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorDto handleMissingServletRequestParameter(MissingServletRequestParameterException e) {
@@ -69,6 +77,26 @@ public class ErrorHandler {
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())
                 .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleHttpMessageNotReadable(HttpMessageNotReadableException e) {
+        log.warn("Пустое тело запроса:", e);
+        return ErrorDto.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(HttpStatus.BAD_REQUEST.toString())
+                .userMessage("Пустое тело запроса")
+                .message(e.getMessage())
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ExceptionHandler(FeignException.class)
+    public ResponseEntity<ErrorDto> handleFeign(FeignException e) throws Exception {
+        return new ResponseEntity<>(mapper.readValue(e.contentUTF8(), ErrorDto.class), HttpStatus.valueOf(e.status()));
     }
 
     @ExceptionHandler

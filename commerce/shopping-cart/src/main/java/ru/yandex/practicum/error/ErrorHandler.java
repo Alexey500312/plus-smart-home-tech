@@ -16,7 +16,9 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.dto.ErrorDto;
-import ru.yandex.practicum.exception.ProductNotFoundException;
+import ru.yandex.practicum.exception.NoProductsInShoppingCartException;
+import ru.yandex.practicum.exception.NotAuthorizedUserException;
+import ru.yandex.practicum.exception.ShoppingCartProductFoundException;
 
 import java.util.List;
 
@@ -98,14 +100,44 @@ public class ErrorHandler {
     }
 
     @ExceptionHandler
-    @ResponseStatus(HttpStatus.NOT_FOUND)
-    public ErrorDto handleProductNotFound(ProductNotFoundException e) {
-        log.warn("Не найден товар:", e);
+    @ResponseStatus(HttpStatus.UNAUTHORIZED)
+    public ErrorDto handleNotAuthorizedUser(NotAuthorizedUserException e) {
+        log.warn("Имя пользователя не должно быть пустым:", e);
         return ErrorDto.builder()
                 .cause(e.getCause())
                 .stackTrace(e.getStackTrace())
-                .httpStatus(HttpStatus.NOT_FOUND.toString())
-                .userMessage("Не найден товар")
+                .httpStatus(HttpStatus.UNAUTHORIZED.toString())
+                .userMessage("Имя пользователя не должно быть пустым")
+                .message(e.getMessage())
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleShoppingCartProductFound(ShoppingCartProductFoundException e) {
+        log.warn("Товары уже добавлены в корзину:", e);
+        return ErrorDto.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(HttpStatus.BAD_REQUEST.toString())
+                .userMessage("Товары уже добавлены в корзину")
+                .message(e.getMessage())
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto handleNoProductsInShoppingCart(NoProductsInShoppingCartException e) {
+        log.warn("Нет искомых товаров в корзине:", e);
+        return ErrorDto.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(HttpStatus.BAD_REQUEST.toString())
+                .userMessage("Нет искомых товаров в корзине")
                 .message(e.getMessage())
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())

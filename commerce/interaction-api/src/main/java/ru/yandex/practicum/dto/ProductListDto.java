@@ -7,7 +7,7 @@ import java.util.List;
 
 @Data
 @Builder(toBuilder = true)
-public class ProductDtoList {
+public class ProductListDto {
     private List<ProductDto> content;
 
     private List<SortDto> sort;
