@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import ru.yandex.practicum.dto.ErrorDto;
+import ru.yandex.practicum.exception.NoOrderBookingFoundException;
 import ru.yandex.practicum.exception.NoSpecifiedProductInWarehouseException;
 import ru.yandex.practicum.exception.ProductInShoppingCartLowQuantityInWarehouseException;
 import ru.yandex.practicum.exception.SpecifiedProductAlreadyInWarehouseException;
@@ -138,6 +139,21 @@ public class ErrorHandler {
                 .stackTrace(e.getStackTrace())
                 .httpStatus(HttpStatus.BAD_REQUEST.toString())
                 .userMessage("Товар из корзины не находится в требуемом количестве на складе")
+                .message(e.getMessage())
+                .suppressed(e.getSuppressed())
+                .localizedMessage(e.getLocalizedMessage())
+                .build();
+    }
+
+    @ExceptionHandler
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ErrorDto NoOrderBookingFound(NoOrderBookingFoundException e) {
+        log.warn("Не найдено бронирование заказа:", e);
+        return ErrorDto.builder()
+                .cause(e.getCause())
+                .stackTrace(e.getStackTrace())
+                .httpStatus(HttpStatus.BAD_REQUEST.toString())
+                .userMessage("Не найдено бронирование заказа")
                 .message(e.getMessage())
                 .suppressed(e.getSuppressed())
                 .localizedMessage(e.getLocalizedMessage())

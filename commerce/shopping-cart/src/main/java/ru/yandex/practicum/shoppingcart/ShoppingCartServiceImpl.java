@@ -18,7 +18,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-@Transactional
+@Transactional(readOnly = true)
 public class ShoppingCartServiceImpl implements ShoppingCartService {
     private final ShoppingCartRepository shoppingCartRepository;
     private final WarehouseClient warehouseClient;
@@ -34,6 +34,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto addProductsToShoppingCart(String userName, Map<UUID, Integer> products) {
         checkUserName(userName);
         ShoppingCart shoppingCart = findActiveShoppingCart(userName);
@@ -62,6 +63,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public void removeShoppingCart(String userName) {
         checkUserName(userName);
         ShoppingCart shoppingCart = findActiveShoppingCart(userName);
@@ -72,6 +74,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto removeProductsFromShoppingCart(String userName, Set<UUID> products) {
         checkUserName(userName);
         ShoppingCart shoppingCart = findActiveShoppingCart(userName);
@@ -94,6 +97,7 @@ public class ShoppingCartServiceImpl implements ShoppingCartService {
     }
 
     @Override
+    @Transactional
     public ShoppingCartDto changeProductQuantity(String userName, ChangeProductQuantityRequest changeProductQuantity) {
         checkUserName(userName);
         ShoppingCart shoppingCart = findActiveShoppingCart(userName);
